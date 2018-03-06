@@ -18,6 +18,14 @@ public:
   // index 0 is p, 1 is i, 2 is d for PID control
   double K[3];
 
+  double best_err;
+  bool cal;
+  std::vector<double> total_err;
+
+  int num_elements;
+  int state;
+  int index;
+
   /*
   * Constructor
   */
@@ -43,6 +51,7 @@ public:
   */
   double TotalError();
 
+  double getTotalError();
 };
 
 #endif /* PID_H */
