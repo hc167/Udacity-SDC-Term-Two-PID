@@ -1,39 +1,30 @@
 #ifndef PID_H
 #define PID_H
 
-#include <vector>
-
 class PID {
 public:
-  /*
-  * Errors
-  */
-  // index 0 is p, 1 is i, 2 is d for PID control
+  // Errors, index 0 is p, 1 is d, 2 is i for PID control
   double error[3];
 
 
-  /*
-  * Coefficients
-  */ 
-  // index 0 is p, 1 is i, 2 is d for PID control
+  // Coefficients
+  // index 0 is p, 1 is d, 2 is i for PID control
   double K[3];
 
-  double best_err;
-  bool cal;
-  std::vector<double> total_err;
+  // for twiddle
+  double dp[3];
 
-  int num_elements;
-  int state;
+  bool is_twiddle;
+  bool first_update;
+  double twiddle_total;
   int index;
+  int state;
+  int sample;
+  int iteration;
+  double best_err;
+  double err_squ;
 
-  /*
-  * Constructor
-  */
   PID();
-
-  /*
-  * Destructor.
-  */
   virtual ~PID();
 
   /*
@@ -51,7 +42,8 @@ public:
   */
   double TotalError();
 
-  double getTotalError();
+  void twiddle();
+
 };
 
 #endif /* PID_H */
