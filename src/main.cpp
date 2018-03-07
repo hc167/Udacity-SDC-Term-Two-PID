@@ -66,14 +66,14 @@ int main()
           // DEBUG
           std::cout << "CTE: " << cte << " Steering Value: " << steer_value << " Angle: "<<angle<<std::endl;
 
-	  if (cte > 2 || cte < -2){
+	  if (cte > 4 || cte < -4){
 	    std::string msg = "42[\"reset\",{}]";
 	    ws.send(msg.data(), msg.length(), uWS::OpCode::TEXT);
 	  }
 	  else{
 	    json msgJson;
 	    msgJson["steering_angle"] = steer_value;
-	    msgJson["throttle"] = 0.3;
+	    msgJson["throttle"] = 0.4;
 	    auto msg = "42[\"steer\"," + msgJson.dump() + "]";
 	    std::cout << msg << std::endl;
 	    ws.send(msg.data(), msg.length(), uWS::OpCode::TEXT);

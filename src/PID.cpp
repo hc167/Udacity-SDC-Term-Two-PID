@@ -3,10 +3,6 @@
 #include <math.h>
 using namespace std;
 
-/*
-* TODO: Complete the PID class.
-*/
-
 PID::PID() {}
 
 PID::~PID() {}
@@ -18,11 +14,11 @@ void PID::Init(double Kp, double Ki, double Kd) {
 
   is_twiddle = true;
   error[0] = error[1] = error[2] = 0;
-  twiddle_total = 0.2;
+  twiddle_total = 0.01;
 
   dp[0] = dp[1] = dp[2] = 1;//0.3;
   index = state = 0;
-  sample = 200;
+  sample = 1000;
   iteration = 0;
   first_update = true;
 }
@@ -39,7 +35,7 @@ void PID::UpdateError(double cte) {
   std::cout<<"K value: "<<K[0]<<" : "<<K[1]<<" : "<<K[2]<<std::endl;
   std::cout<<"errors : "<<error[0]<<" : "<<error[1]<<" : "<<error[2]<<std::endl;
   std::cout<<"dp values : "<<dp[0]<<" : "<<dp[1]<<" : "<<dp[2]<<std::endl;
-  std::cout<<"index : "<<index<<" state: "<<state<<std::endl;
+  std::cout<<"index : "<<index<<" state: "<<state<<" twiddle: "<<is_twiddle<<" best err: "<<best_err<<std::endl;
 }
 
 double PID::TotalError() {
@@ -66,11 +62,31 @@ void PID::twiddle() {
   }
   else{
     err_squ = err_squ + error[0]*error[0];
+
+    // Let's see if we can speed up the twiddle process by checking if err_squ is already larger than best_err
+    if (state == 1 && err_squ > best_err){
+      K[index] -= 2*dp[index];
+      state = 2;
+      iteration = 0;
+      error[2] = 0;
+      return;
+    }
+    else if (state == 2 && err_squ > best_err){
+      K[index] += dp[index];
+      dp[index] *=0.9;
+      index = (index+1) % 3;
+      state = 0;
+      iteration = 0;
+      error[2] = 0;
+      return;
+    }
+    
     if (iteration < 2*sample)
       return;
   }
 
   iteration = 0;
+  error[2] = 0;
 
   if (first_update){
     first_update = false;
@@ -100,7 +116,7 @@ void PID::twiddle() {
     break;
   case 2:
     if (err_squ < best_err){
-      best_err = error[0];
+      best_err = err_squ;
       dp[index] *= 1.1;
     }
     else{
