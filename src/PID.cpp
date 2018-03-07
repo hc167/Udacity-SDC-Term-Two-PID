@@ -20,7 +20,7 @@ void PID::Init(double Kp, double Ki, double Kd) {
   }
 
   error[0] = error[1] = error[2] = 0;
-  twiddle_total = 0.01;
+  twiddle_total = 0.05;
 
   dp[0] = dp[1] = dp[2] = 1;//0.3;
   index = state = 0;
@@ -33,6 +33,8 @@ void PID::UpdateError(double cte) {
   error[1] = cte - error[0];
   error[0] = cte;
   error[2] += cte;
+
+  std::cout<<"K value: "<<K[0]<<" : "<<K[1]<<" : "<<K[2]<<std::endl;
 
   if ( is_twiddle ){
     twiddle();
@@ -50,7 +52,6 @@ double PID::TotalError() {
 
 void PID::twiddle() {
 
-  std::cout<<"K value: "<<K[0]<<" : "<<K[1]<<" : "<<K[2]<<std::endl;
   std::cout<<"errors : "<<error[0]<<" : "<<error[1]<<" : "<<error[2]<<std::endl;
   std::cout<<"dp values : "<<dp[0]<<" : "<<dp[1]<<" : "<<dp[2]<<std::endl;
   std::cout<<"index : "<<index<<" state: "<<state<<" best err: "<<best_err<<std::endl;
