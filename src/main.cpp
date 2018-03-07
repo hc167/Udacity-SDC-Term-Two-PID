@@ -3,6 +3,7 @@
 #include "json.hpp"
 #include "PID.h"
 #include <math.h>
+#include <vector>
 
 // for convenience
 using json = nlohmann::json;
@@ -36,8 +37,10 @@ int main()
   // TODO: Initialize the pid variable.
   //  pid.Init(-0.7, -0.005, 0.35);
   pid.Init();
+  std::vector<double> cte_list;
+  std::vector<double> speed_list;
 
-  h.onMessage([&pid](uWS::WebSocket<uWS::SERVER> ws, char *data, size_t length, uWS::OpCode opCode) {
+  h.onMessage([&pid, &cte_list, &speed_list](uWS::WebSocket<uWS::SERVER> ws, char *data, size_t length, uWS::OpCode opCode) {
     // "42" at the start of the message means there's a websocket message event.
     // The 4 signifies a websocket message
     // The 2 signifies a websocket event
@@ -60,6 +63,26 @@ int main()
           * another PID controller to control the speed!
           */
 
+	  cte_list.push_back(cte);
+	  speed_list.push_back(speed);
+
+	  if ( cte_list.size() > 10 ){
+	    cte_list.erase(cte_list.begin());
+	    speed_list.erase(speed_list.begin());
+	  }
+
+	  unsigned int count=0;
+	  for (unsigned int i=0; i<cte_list.size(); ++i){
+	    if (cte_list[i] == cte)
+	      ++count;
+	    if(speed_list[i] == 0)
+	      ++count;
+	  }
+	  if(count == 2*cte_list.size()){
+	    std::string msg = "42[\"reset\",{}]";
+	    ws.send(msg.data(), msg.length(), uWS::OpCode::TEXT);
+	  }
+	  
 	  pid.UpdateError(cte);
 	  steer_value = pid.TotalError();
           
