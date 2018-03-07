@@ -8,17 +8,23 @@ PID::PID() {}
 PID::~PID() {}
 
 void PID::Init(double Kp, double Ki, double Kd) {
-  this->K[0] = 0;//Kp;
-  this->K[1] = 0;//Kd;
-  this->K[2] = 0;//Ki;
+  this->K[0] = Kp;
+  this->K[1] = Kd;
+  this->K[2] = Ki;
 
-  is_twiddle = true;
+  if (K[0] == 0 && K[1] == 0 && K[2] == 0){
+    is_twiddle = true;
+  }
+  else{
+    is_twiddle = true;
+  }
+
   error[0] = error[1] = error[2] = 0;
   twiddle_total = 0.01;
 
   dp[0] = dp[1] = dp[2] = 1;//0.3;
   index = state = 0;
-  sample = 1000;
+  sample = 500;
   iteration = 0;
   first_update = true;
 }
@@ -61,7 +67,9 @@ void PID::twiddle() {
     return;
   }
   else{
-    err_squ = err_squ + error[0]*error[0];
+    double square = error[0] * error[0];
+    square *= square; // Double square to hope that I can speed up thing a little
+    err_squ += square;
 
     // Let's see if we can speed up the twiddle process by checking if err_squ is already larger than best_err
     if (state == 1 && err_squ > best_err){
