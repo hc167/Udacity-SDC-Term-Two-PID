@@ -35,8 +35,10 @@ int main()
 
   PID pid;
   // TODO: Initialize the pid variable.
-  //  pid.Init(-0.7, -0.005, 0.35);
+
+  // 
   pid.Init();
+  //  pid.Init(0.109, 0, 3.189);
   std::vector<double> cte_list;
   std::vector<double> speed_list;
 
@@ -75,7 +77,7 @@ int main()
 	  for (unsigned int i=0; i<cte_list.size(); ++i){
 	    if (cte_list[i] == cte)
 	      ++count;
-	    if(speed_list[i] == 0)
+	    if(speed_list[i] < 1)
 	      ++count;
 	  }
 	  if(count == 2*cte_list.size()){

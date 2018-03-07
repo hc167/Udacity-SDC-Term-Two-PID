@@ -16,7 +16,7 @@ void PID::Init(double Kp, double Ki, double Kd) {
     is_twiddle = true;
   }
   else{
-    is_twiddle = true;
+    is_twiddle = false;
   }
 
   error[0] = error[1] = error[2] = 0;
@@ -37,11 +37,6 @@ void PID::UpdateError(double cte) {
   if ( is_twiddle ){
     twiddle();
   }
-
-  std::cout<<"K value: "<<K[0]<<" : "<<K[1]<<" : "<<K[2]<<std::endl;
-  std::cout<<"errors : "<<error[0]<<" : "<<error[1]<<" : "<<error[2]<<std::endl;
-  std::cout<<"dp values : "<<dp[0]<<" : "<<dp[1]<<" : "<<dp[2]<<std::endl;
-  std::cout<<"index : "<<index<<" state: "<<state<<" twiddle: "<<is_twiddle<<" best err: "<<best_err<<std::endl;
 }
 
 double PID::TotalError() {
@@ -55,6 +50,11 @@ double PID::TotalError() {
 
 void PID::twiddle() {
 
+  std::cout<<"K value: "<<K[0]<<" : "<<K[1]<<" : "<<K[2]<<std::endl;
+  std::cout<<"errors : "<<error[0]<<" : "<<error[1]<<" : "<<error[2]<<std::endl;
+  std::cout<<"dp values : "<<dp[0]<<" : "<<dp[1]<<" : "<<dp[2]<<std::endl;
+  std::cout<<"index : "<<index<<" state: "<<state<<" best err: "<<best_err<<std::endl;
+  
   if ( state ==0 && (dp[0] + dp[1] + dp[2] < twiddle_total) && index == 0 ){
     is_twiddle = false;
     return;
@@ -68,7 +68,6 @@ void PID::twiddle() {
   }
   else{
     double square = error[0] * error[0];
-    square *= square; // Double square to hope that I can speed up thing a little
     err_squ += square;
 
     // Let's see if we can speed up the twiddle process by checking if err_squ is already larger than best_err
