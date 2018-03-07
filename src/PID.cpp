@@ -69,6 +69,7 @@ void PID::twiddle() {
   }
   else{
     double square = error[0] * error[0];
+    square *= square; // square it again to speed up the computation a little
     err_squ += square;
 
     // Let's see if we can speed up the twiddle process by checking if err_squ is already larger than best_err
