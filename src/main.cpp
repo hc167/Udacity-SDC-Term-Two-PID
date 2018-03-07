@@ -67,7 +67,7 @@ int main()
           // DEBUG
           std::cout << "CTE: " << cte << " Steering Value: " << steer_value << " Angle: "<<angle<<std::endl;
 
-	  if (cte > 6 || cte < -6){
+	  if (cte > 5 || cte < -5){
 	    std::string msg = "42[\"reset\",{}]";
 	    ws.send(msg.data(), msg.length(), uWS::OpCode::TEXT);
 	  }
