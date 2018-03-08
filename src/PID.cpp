@@ -24,7 +24,7 @@ void PID::Init(double Kp, double Ki, double Kd) {
 
   dp[0] = dp[1] = dp[2] = 1;//0.3;
   index = state = 0;
-  sample = 500;
+  sample = 1000;
   iteration = 0;
   first_update = true;
 }
