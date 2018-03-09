@@ -40,7 +40,7 @@ int main()
   // pid.Init();
   // I used twiddle to find these values. I can make it better but somehow it crash. So I use these variables to hang in the project.
   pid.Init(0.137611, 0, 2.89388);
-  //  pid.Init(0.109, 0, 3.189);
+  // pid.Init(0.109, 0, 3.189);
   std::vector<double> cte_list;
   std::vector<double> speed_list;
 

@@ -1,6 +1,8 @@
 #include "PID.h"
 #include <iostream>
 #include <math.h>
+#include <numeric>
+
 using namespace std;
 
 PID::PID() {}
@@ -30,7 +32,15 @@ void PID::Init(double Kp, double Ki, double Kd) {
 }
 
 void PID::UpdateError(double cte) {
-  error[1] = cte - error[0];
+  double diff = cte - error[0];
+
+  lowpass.push_back(diff);
+
+  if (lowpass.size() > 3){
+    lowpass.erase(lowpass.begin());
+  }
+
+  error[1] = std::accumulate( lowpass.begin(), lowpass.end(), 0.0)/lowpass.size();
   error[0] = cte;
   error[2] += cte;
 

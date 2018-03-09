@@ -1,6 +1,8 @@
 #ifndef PID_H
 #define PID_H
 
+#include <vector>
+
 class PID {
 public:
   // Errors, index 0 is p, 1 is d, 2 is i for PID control
@@ -23,6 +25,8 @@ public:
   int iteration;
   double best_err;
   double err_squ;
+
+  std::vector<double> lowpass;
 
   PID();
   virtual ~PID();
